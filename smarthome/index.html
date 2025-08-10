@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <div id="navbar">
+        <div id="date"></div>
+    </div>
+
+    <!-- Header -->
+    <div id="header">
+        <ul>
+            <li><b>Smart Home</b></li>
+            <img src="icon.png" id="logo">
+        </ul>
+    </div>
+    
+    <!-- Home Section -->
+    <div id="home" style="display: block;">
+        <div id="main"> 
+            <!-- Top Info -->
+            <div id="top">
+                <!-- Time -->
+                <div id="time"></div>
+
+                <!-- Temperature -->
+                <div id="nd">
+                    <h1><img src="temp.png" id="nd1"></h1>
+                    <h2>Temperature</h2>
+                </div>
+
+                <!-- Light Intensity -->
+                <div id="cdas">
+                    <h3><img src="cdas.png" id="cdas1"></h3>
+                    <h4>LightIntensity</h4>
+                </div>
+
+                <!-- Volume -->
+                <div id="vl">
+                    <h5><img src="volume1.png" id="vl1"></h5>
+                    <h6>Volume</h6>
+                </div>
+
+                <!-- Parameters -->
+                <div class="thongso">
+                    <h7 id="nhietdo"></h7>
+                    <h7 id="cuongdoanhsang"></h7>
+                    <h7 id="volume"></h7>
+                </div>
+            </div>
+            
+            <!-- Controls -->
+            <div id="bot">
+                <h1>
+                    <center><img src="may lanh.png" id="maylanh"></center>
+                    <button type="button" id="btn1">On</button>
+                    <button type="button" id="btn2">Off</button><br><br>
+                </h1>
+                <h1>
+                    <center><img src="denoff.png" id="led"></center>
+                    <button type="button" id="btn3">On</button>
+                    <button type="button" id="btn4">Off</button><br><br>
+                </h1>
+                <h1>
+                    <center><img src="loa off.png" id="loa"></center>
+                    <button type="button" id="btn5">On</button>
+                    <button type="button" id="btn6">Off</button><br><br>
+                </h1>
+                <h2>Air-conditioner</h2>
+                <h3>Light</h3>
+                <h4>Loudspeaker</h4>
+            </div>
+
+            <!-- Charts -->
+            <div id="chart" style="display: block;">
+                <div class="chart-row">
+                    <div class="chart-container">
+                        <canvas id="chart-temperature" width="600" height="300"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chart-lightintensity" width="600" height="300"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chart-volume" width="600" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Function Script -->
+    <script src="function.js"></script>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-analytics.js"></script>
+
+    <script>
+        // Firebase config
+        var firebaseConfig = {
+            apiKey: "AIzaSyClfCw4ZLQ_Cas_q_JV01E72YMhB4sYcQU",
+            authDomain: "tttt-1e85d.firebaseapp.com",
+            databaseURL: "https://tttt-1e85d-default-rtdb.firebaseio.com",
+            projectId: "tttt-1e85d",
+            storageBucket: "tttt-1e85d.appspot.com",
+            messagingSenderId: "457709919960",
+            appId: "1:457709919960:web:ef81fe057fcf3acd1681ad",
+            measurementId: "G-SY8Q1Z51HQ"
+        };
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+    </script>
+
+    <script>
+        // Clock
+        function dongho() {
+            var time = new Date();
+            var gio = String(time.getHours()).padStart(2, "0");
+            var phut = String(time.getMinutes()).padStart(2, "0");
+            var giay = String(time.getSeconds()).padStart(2, "0");
+            document.getElementById("time").innerHTML = `${gio}:${phut}:${giay}`;
+            setTimeout(dongho, 1000);
+        }
+        dongho();
+
+        // Date
+        function updateDate() {
+            var now = new Date();
+            var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            var formattedDate = `${daysOfWeek[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+            document.getElementById("date").innerHTML = formattedDate;
+        }
+        updateDate();
+    </script>
+
+    <script>
+        // Database references
+        var nhietDo = document.getElementById('nhietdo');
+        var cdAS = document.getElementById('cuongdoanhsang');
+        var voLume = document.getElementById('volume');
+
+        var dbRef = firebase.database().ref('phong1').child('Nhietdo');  
+        var dbRef2 = firebase.database().ref('phong1').child('Cdas');
+        var dbRef3 = firebase.database().ref('phong1').child('Volume');
+
+        var dbRef4 = firebase.database().ref('phong2').child('Nhietdo');  
+        var dbRef5 = firebase.database().ref('phong2').child('Cdas');
+        var dbRef6 = firebase.database().ref('phong2').child('Volume');
+
+        var dbRef7 = firebase.database().ref('phong3').child('Nhietdo');
+        var dbRef8 = firebase.database().ref('phong3').child('Cdas');  
+        var dbRef9 = firebase.database().ref('phong3').child('Volume');
+
+        var dbRef10 = firebase.database().ref('phong4').child('Nhietdo');
+        var dbRef11 = firebase.database().ref('phong4').child('Cdas');
+        var dbRef12 = firebase.database().ref('phong4').child('Volume');
+
+        // Functions to update data
+        function function_p1() {
+            dbRef.on('value', snap => nhietDo.innerText = snap.val());
+            dbRef2.on('value', snap => cdAS.innerText = snap.val());
+            dbRef3.on('value', snap => voLume.innerText = snap.val());
+        }
+        function function_p2() {
+            dbRef4.on('value', snap => nhietDo.innerText = snap.val());
+            dbRef5.on('value', snap => cdAS.innerText = snap.val());
+            dbRef6.on('value', snap => voLume.innerText = snap.val());
+        }
+        function function_p3() {
+            dbRef7.on('value', snap => nhietDo.innerText = snap.val());
+            dbRef8.on('value', snap => cdAS.innerText = snap.val());
+            dbRef9.on('value', snap => voLume.innerText = snap.val());
+        }
+        function function_p4() {
+            dbRef10.on('value', snap => nhietDo.innerText = snap.val());
+            dbRef11.on('value', snap => cdAS.innerText = snap.val());
+            dbRef12.on('value', snap => voLume.innerText = snap.val());
+        }
+    </script>
+
+    <script>
+        // Chart.js
+        const ctxTemperature = document.getElementById('chart-temperature').getContext('2d');
+        const ctxLightIntensity = document.getElementById('chart-lightintensity').getContext('2d');
+        const ctxVolume = document.getElementById('chart-volume').getContext('2d');
+
+        let temperatureData = [];
+        let lightIntensityData = [];
+        let volumeData = [];
+
+        const temperatureChart = new Chart(ctxTemperature, {
+            type: 'bar',
+            data: {
+                labels: ['Kitchen', 'Bedroom', 'Toilet', 'Garage'],
+                datasets: [{
+                    label: 'Temperature',
+                    data: temperatureData,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)'
+                }]
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        });
+
+        const lightIntensityChart = new Chart(ctxLightIntensity, {
+            type: 'bar',
+            data: {
+                labels: ['Kitchen', 'Bedroom', 'Toilet', 'Garage'],
+                datasets: [{
+                    label: 'Light Intensity',
+                    data: lightIntensityData,
+                    borderColor: 'rgba(0, 255, 0, 1)',
+                    backgroundColor: 'rgba(0, 255, 0, 0.2)'
+                }]
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        });
+
+        const volumeChart = new Chart(ctxVolume, {
+            type: 'bar',
+            data: {
+                labels: ['Kitchen', 'Bedroom', 'Toilet', 'Garage'],
+                datasets: [{
+                    label: 'Volume',
+                    data: volumeData,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)'
+                }]
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        });
+
+        function updateCharts() {
+            const rooms = ['phong1', 'phong2', 'phong3', 'phong4'];
+            rooms.forEach((room, index) => {
+                firebase.database().ref(room).child('Nhietdo').on('value', snap => {
+                    temperatureData[index] = snap.val();
+                    temperatureChart.update();
+                });
+                firebase.database().ref(room).child('Cdas').on('value', snap => {
+                    lightIntensityData[index] = snap.val();
+                    lightIntensityChart.update();
+                });
+                firebase.database().ref(room).child('Volume').on('value', snap => {
+                    volumeData[index] = snap.val();
+                    volumeChart.update();
+                });
+            });
+        }
+    </script>
+</body>
+</html>
