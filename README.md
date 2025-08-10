@@ -4,7 +4,7 @@ Dự án này cho phép điều khiển thiết bị thông minh (đèn, quạt,
 
 ##  Tính năng chính
 - Bật/tắt thiết bị từ giao diện web.
-- Đồng bộ trạng thái thời gian thực giữa Web ↔ Firebase ↔ Arduino.
+- Đồng bộ trạng thái thời gian thực giữa Web ↔ Firebase ↔ ESP32.
 - Thiết kế web trực quan, dễ sử dụng.
 - Có thể mở rộng thêm nhiều thiết bị hoặc cảm biến.
 
@@ -25,5 +25,11 @@ Dự án này cho phép điều khiển thiết bị thông minh (đèn, quạt,
 - **Arduino IDE**: Lập trình điều khiển phần cứng.
 
 ---
+##  Phần cứng sử dụng
+- ESP32
+- Cảm biến nhiệt độ & độ ẩm DHT22  
+- Cảm biến quang trở (LDR)   
+- Đèn LED  
 
+---
 
