@@ -10,7 +10,7 @@ Dự án này cho phép điều khiển thiết bị thông minh (đèn, quạt,
 
 ##  Hình ảnh dự án
 
-![Images](https://drive.google.com/drive/u/3/folders/1qp56jcnaBgfeDVpHGdbs62WjfMVxyOgu)
+[![Images]](https://drive.google.com/drive/u/3/folders/1qp56jcnaBgfeDVpHGdbs62WjfMVxyOgu)
 
 
 
