@@ -2,41 +2,39 @@
 #include <FirebaseESP32.h>
 #include <DHT.h>
 
-// ======================= WiFi Config =======================
+// WiFi Config 
 #define WIFI_SSID       "Dak"
 #define WIFI_PASSWORD   "12345678"
 
-// ==================== Firebase Config ======================
+// Firebase Config
 #define FIREBASE_HOST   "https://tttt-1e85d-default-rtdb.firebaseio.com/"
 #define FIREBASE_AUTH   "yqvjUPNvb7v8yh6BRvIJRWXwWiUtgqL1kFZ9hSpy"
 
-// ==================== DHT22 Sensor =========================
+// DHT22 Sensor 
 #define DHTPIN          15
 #define DHTTYPE         DHT22
 DHT dht(DHTPIN, DHTTYPE);
 
-// ==================== LED Pins =============================
+// LED Pins 
 #define LED_RED         25
 #define LED_GREEN       26
 #define LED_YELLOW      27
 
-// ==================== Sound Sensor =========================
+// Sound Sensor 
 #define SOUND_PIN       35
 
-// ==================== LDR Sensor ===========================
+// LDR Sensor 
 #define LDR_PIN         34
 
-// ==================== Firebase Objects =====================
+// Firebase Objects
 FirebaseData firebaseData;
 FirebaseConfig firebaseConfig;
 FirebaseAuth firebaseAuth;
 
-// ==================== LED States ===========================
+// LED States 
 int previousStates[3] = {0, 0, 0}; // Red, Green, Yellow
 
-// ============================================================
-// Setup
-// ============================================================
+
 void setup() {
     Serial.begin(115200);
 
@@ -64,9 +62,9 @@ void setup() {
     Firebase.reconnectWiFi(true);
 }
 
-// ============================================================
+
 // Read Sensors
-// ============================================================
+
 float readLDR() {
     return convertADCToLux(analogRead(LDR_PIN));
 }
@@ -80,9 +78,9 @@ float readSoundLevel() {
     return analogRead(SOUND_PIN);
 }
 
-// ============================================================
+
 // Loop
-// ============================================================
+
 void loop() {
     float temperature = dht.readTemperature();
     float lightLevel  = readLDR();
@@ -94,9 +92,9 @@ void loop() {
     delay(5000);
 }
 
-// ============================================================
+
 // Upload Sensor Data to Firebase
-// ============================================================
+
 void uploadSensorData(float temperature, float lightLevel, float soundLevel) {
     if (Firebase.ready()) {
         if (Firebase.setFloat(firebaseData, "/phong1/Nhietdo", temperature)) {
@@ -121,9 +119,9 @@ void uploadSensorData(float temperature, float lightLevel, float soundLevel) {
     }
 }
 
-// ============================================================
+
 // Update LED State from Firebase
-// ============================================================
+
 void updateLEDState() {
     const char* firebasePaths[] = {
         "/thietbi2/den1",
@@ -148,9 +146,9 @@ void updateLEDState() {
     }
 }
 
-// ============================================================
+
 // Control Individual LED
-// ============================================================
+
 void controlLED(const char* firebasePath, int ledPin, const char* ledName, int index) {
     if (Firebase.getString(firebaseData, firebasePath)) {
         String newState = firebaseData.stringData();
